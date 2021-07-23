@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using BackEnd;
-
+using System.Numerics;
+using System;
 public class ReadUserInfo : MonoBehaviour
 {
     void CheckUserData() // 서버 유저 데이터 체크 하는 함수
@@ -17,6 +18,11 @@ public class ReadUserInfo : MonoBehaviour
             else
             {
                 var rows = UserInfo.GetReturnValuetoJSON()["rows"]; // json밸류 rows에 대한 정보를 var rows 변수에 저장.
+                GameDataManager.gamedata.money = BigInteger.Parse(rows[0]["Money"][0].ToString());
+                GameDataManager.gamedata.clickmoney = BigInteger.Parse(rows[0]["ClickMoney"][0].ToString());
+                GameDataManager.gamedata.timemoney = BigInteger.Parse(rows[0]["TimePerMoney"][0].ToString());
+                GameDataManager.gamedata.policeui.text = rows[0]["Police"][0].ToString() + " %";
+                GameDataManager.gamedata.medicui.text = rows[0]["Medic"][0].ToString() + " %";
                 Debug.Log(rows[0]["BuildingLevel"][0]["CityHall"][0].ToString()); // rows의 0번째 테이블중 BuildingLevel 컬럼의 0번째 중 cityhall의 0번째 값을 출력.
                 //만약 clickMoney를 찾을려면 rows[0]["Money][0].ToString(); 하면 됨.
             }
@@ -28,11 +34,11 @@ public class ReadUserInfo : MonoBehaviour
     }
     void InitalizeUser() // UserInfo테이블에 데이터가 없는 신규 유저일시 정보를 생성해주는 함수.
     {
-        int ClickMoney = 1; // 터치당 돈 1원
-        int TimePerMoney = 0; // 초당 돈 0원
-        int Money = 0; // 가지고 있는 돈 0원
-        float Police = 0f; // 치안율 0.0
-        float Medic = 0f; // 보건율 0.0
+        string ClickMoney = "1"; // 터치당 돈 1원
+        string TimePerMoney = "0"; // 초당 돈 0원
+        string Money = "0"; // 가지고 있는 돈 0원
+        float Police = 100f; // 치안율 0.0
+        float Medic = 100f; // 보건율 0.0
         Dictionary<string, int> BuildingLevel = new Dictionary<string, int> // 빌딩들의 레벨은 딕셔너리로 저장함.
         {
             {"CityHall", 1 },
