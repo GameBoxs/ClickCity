@@ -15,8 +15,6 @@ public class ObjectGrowUp : MonoBehaviour
         for (int i = 0; i < transform.childCount; i++)
         {
             childs.Add(transform.GetChild(i));
-            //transform.GetChild(i).gameObject.transform.localScale.x = 0f;
-            //transform.GetChild(i).gameObject.transform.localScale.Set(0f, 1f, 1f);
             transform.GetChild(i).gameObject.transform.localScale = new Vector3(0, 0, 0);
         }
 
@@ -37,7 +35,6 @@ public class ObjectGrowUp : MonoBehaviour
                 if (childs.Count == 0)
                     yield break;
                 i = Random.Range(0, childs.Count);
-                //childs[i].gameObject.SetActive(true);
                 while (x <= max)
                 {
                     childs[i].gameObject.transform.localScale = new Vector3(x, x, x);

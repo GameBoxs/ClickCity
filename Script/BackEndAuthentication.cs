@@ -4,16 +4,34 @@ using UnityEngine;
 using BackEnd;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System;
 public class BackEndAuthentication : MonoBehaviour
 {
     public InputField customid;
     public InputField custompw;
-
+    public InputField customemail;
+    public InputField customidsign;
+    public InputField custompwsign;
     // 회원가입1 - 동기 방식
+    void SignUpEmail()
+    {
+        string emailerror = Backend.BMember.UpdateCustomEmail(customemail.text).GetMessage();
+        switch (emailerror)
+        {
+            case "Success":
+                Debug.Log("이메일 등록 완료");
+                break;
+            default:
+                Debug.Log("에러");
+                break;
+        }
+    }
     public void OnClickSignUp()
     {
         // 회원 가입을 한뒤 결과를 BackEndReturnObject 타입으로 반환한다.
-        string error = Backend.BMember.CustomSignUp(customid.text, custompw.text, "Test1").GetErrorCode();
+        string signdate = "가입일: " + DateTime.Now.ToString("yyyy-MM-dd");
+        string error = Backend.BMember.CustomSignUp(customidsign.text, custompwsign.text, signdate).GetErrorCode();
+        
 
         // 회원 가입 실패 처리
         switch (error)
@@ -24,9 +42,9 @@ public class BackEndAuthentication : MonoBehaviour
 
             default:
                 Debug.Log("회원 가입 완료");
+                SignUpEmail();
                 break;
         }
-
         Debug.Log("동기 방식============================================= ");
 
     }
