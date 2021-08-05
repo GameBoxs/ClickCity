@@ -14,7 +14,12 @@ public class GameDataManager : MonoBehaviour
     BigInteger[] printtimemoney = new BigInteger[26]; // 단위로 바꿔서 UI에 표시할 돈 변수
     float police; // 치안율
     float medic; // 보건율
-
+    //------건물 업그레이드 비용, 클릭, 초당 차트에서 불러온 내역 저장------
+    //시청
+    public BigInteger[] CityHallPrice = new BigInteger[100];
+    public BigInteger[] CityHallPerClick = new BigInteger[100];
+    public BigInteger[] CityHallPerTime = new BigInteger[100];
+    //----------------------------------------------------------------------
     public TextMeshProUGUI moneyui;
     public TextMeshProUGUI clickmoneyui;
     public TextMeshProUGUI timemoneyui;

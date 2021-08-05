@@ -4,6 +4,8 @@ using UnityEngine;
 using BackEnd;
 using System.Numerics;
 using System;
+using LitJson;
+
 public class ReadUserInfo : MonoBehaviour
 {
     void CheckUserData() // 서버 유저 데이터 체크 하는 함수
@@ -87,9 +89,38 @@ public class ReadUserInfo : MonoBehaviour
             }
         }
     }
+    void ReadBuilding() // 차트에서 내역 불러오기.
+    {
+        BackendReturnObject ChartCityHall = Backend.Chart.GetChartContents("25093");
+        if(ChartCityHall.IsSuccess())
+        {
+            JsonData rows = ChartCityHall.GetReturnValuetoJSON()["rows"];
+            for(int i=0;i<rows.Count;i++)
+            {
+                GameDataManager.gamedata.CityHallPrice[i] = BigInteger.Parse(rows[i]["Price"][0].ToString());
+                GameDataManager.gamedata.CityHallPerClick[i] = BigInteger.Parse(rows[i]["ClickPerMoney"][0].ToString());
+                GameDataManager.gamedata.CityHallPerTime[i] = BigInteger.Parse(rows[i]["TimePerMoney"][0].ToString());
+            }
+        }
+        else
+        {
+            switch (ChartCityHall.GetStatusCode())
+            {
+
+                case "400":
+                    Debug.Log("올바르지 못한 { uuid | id } 를 입력");
+                    break;
+
+                default:
+                    Debug.Log("서버 공통 에러 발생: " + ChartCityHall.GetMessage());
+                    break;
+            }
+        }
+    }
     void Start()
     {
         CheckUserData();
+        ReadBuilding();
     }
     public void OnclickLogout()
     {
