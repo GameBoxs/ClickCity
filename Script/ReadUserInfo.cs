@@ -23,8 +23,15 @@ public class ReadUserInfo : MonoBehaviour
                 GameDataManager.gamedata.money = BigInteger.Parse(rows[0]["Money"][0].ToString());
                 GameDataManager.gamedata.clickmoney = BigInteger.Parse(rows[0]["ClickMoney"][0].ToString());
                 GameDataManager.gamedata.timemoney = BigInteger.Parse(rows[0]["TimePerMoney"][0].ToString());
+                GameDataManager.gamedata.police = float.Parse(rows[0]["Police"][0].ToString());
+                GameDataManager.gamedata.medic = float.Parse(rows[0]["Medic"][0].ToString());
                 GameDataManager.gamedata.policeui.text = rows[0]["Police"][0].ToString() + " %";
                 GameDataManager.gamedata.medicui.text = rows[0]["Medic"][0].ToString() + " %";
+
+                GameDataManager.gamedata.CityHallLevel = int.Parse(rows[0]["BuildingLevel"][0]["CityHall"][0].ToString());
+
+                GameDataManager.gamedata.indate = rows[0]["inDate"][0].ToString();
+
                 Debug.Log(rows[0]["BuildingLevel"][0]["CityHall"][0].ToString()); // rows의 0번째 테이블중 BuildingLevel 컬럼의 0번째 중 cityhall의 0번째 값을 출력.
                 //만약 clickMoney를 찾을려면 rows[0]["Money][0].ToString(); 하면 됨.
             }
@@ -120,7 +127,7 @@ public class ReadUserInfo : MonoBehaviour
     void Start()
     {
         CheckUserData();
-        ReadBuilding();
+        //ReadBuilding();
     }
     public void OnclickLogout()
     {

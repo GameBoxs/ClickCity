@@ -50,8 +50,23 @@ public class BackEndAuthentication : MonoBehaviour
     }
     public void OnClickLogin()
     {
+        BackendReturnObject bro = Backend.BMember.CustomLogin(customid.text, custompw.text);
+        if (bro.IsSuccess())
+        {
+            Debug.Log("로그인에 성공했습니다");
+            LoadingSceneController.lname = "MainScene";
+            SceneManager.LoadScene("LoadingScene");
+        }
+        else
+        {
+            Debug.Log(bro.GetStatusCode().ToString());
+            Debug.Log(bro.GetErrorCode().ToString());
+            Debug.Log(bro.GetMessage().ToString());
+        }
+        /*
         string error = Backend.BMember.CustomLogin(customid.text, custompw.text).GetErrorCode();
-
+        Debug.Log("아이디:" + customid.text);
+        Debug.Log("비번:" + custompw.text);
         // 로그인 실패 처리
         switch (error)
         {
@@ -67,9 +82,12 @@ public class BackEndAuthentication : MonoBehaviour
 
             default:
                 Debug.Log("로그인 완료");
-                SceneManager.LoadScene("MainScene");
+                LoadingSceneController.lname = "MainScene";
+                SceneManager.LoadScene("LoadingScene");
+                //SceneManager.LoadScene("MainScene");
                 break;
         }
         Debug.Log("동기 방식============================================= ");
+        */
     }
 }
