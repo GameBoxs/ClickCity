@@ -15,6 +15,7 @@ public class BackEndAuthentication : MonoBehaviour
     // 회원가입1 - 동기 방식
     void SignUpEmail()
     {
+        // 회원가입한뒤 인풋 필드 이메일의 string대로 뒤끝의 서버로 전송후 결과를 받아옴
         string emailerror = Backend.BMember.UpdateCustomEmail(customemail.text).GetMessage();
         switch (emailerror)
         {
@@ -48,8 +49,9 @@ public class BackEndAuthentication : MonoBehaviour
         Debug.Log("동기 방식============================================= ");
 
     }
-    public void OnClickLogin()
+    public void OnClickLogin() // 구글이 아닌 커스텀 계정 로그인 버튼 누를시
     {
+        //인풋필드 id, pw를 뒤끝 서버로 전송하여 로그인 결과를 받아옴
         BackendReturnObject bro = Backend.BMember.CustomLogin(customid.text, custompw.text);
         if (bro.IsSuccess())
         {
@@ -57,37 +59,11 @@ public class BackEndAuthentication : MonoBehaviour
             LoadingSceneController.lname = "MainScene";
             SceneManager.LoadScene("LoadingScene");
         }
-        else
+        else //로그인 실패시 디버그 로그 출력.
         {
             Debug.Log(bro.GetStatusCode().ToString());
             Debug.Log(bro.GetErrorCode().ToString());
             Debug.Log(bro.GetMessage().ToString());
         }
-        /*
-        string error = Backend.BMember.CustomLogin(customid.text, custompw.text).GetErrorCode();
-        Debug.Log("아이디:" + customid.text);
-        Debug.Log("비번:" + custompw.text);
-        // 로그인 실패 처리
-        switch (error)
-        {
-            // 아이디 또는 비밀번호가 틀렸을 경우
-            case "BadUnauthorizedException":
-                Debug.Log("아이디 또는 비밀번호가 틀렸다.");
-                break;
-
-
-            case "BadPlayer":  //  이 경우 콘솔에서 입력한 차단된 사유가 에러코드가 된다.
-                Debug.Log("차단된 유저");
-                break;
-
-            default:
-                Debug.Log("로그인 완료");
-                LoadingSceneController.lname = "MainScene";
-                SceneManager.LoadScene("LoadingScene");
-                //SceneManager.LoadScene("MainScene");
-                break;
-        }
-        Debug.Log("동기 방식============================================= ");
-        */
     }
 }

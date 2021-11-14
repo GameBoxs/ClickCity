@@ -12,31 +12,34 @@ public class LoadingSceneController : MonoBehaviour
     [SerializeField]
     private Image progressBar;
 
-    private string loadSceneName;
-    public static string lname;
-    void Start()
+    private string loadSceneName; // 불러올 씬 이름
+    public static string lname; // 다른 스크립트에서 해당 static 변수에 불러올 씬 이름 저장
+    void Start() // 해당 스크립트 실행시
     {
-        LoadScene(lname);
+        LoadScene(lname); // LoadScene함수를 실행하고 lname을 매개변수로 전달.
     }
     public void LoadScene(string sceneName)
     {
         gameObject.SetActive(true);
 
         
-        SceneManager.sceneLoaded += OnSceneLoaded; //SceneManager.sceneLoaded 을 통해 유니티에서는 로딩씬이 끝나는 시점을 받을 수 있음
-        //OnSceneLoaded 를 입력하고 ctrl+. 을 눌러 메서드를 생성해주면 아래 OnSceneLoaded 메서드가 자동으로 만들어짐
+        SceneManager.sceneLoaded += OnSceneLoaded; 
+        //SceneManager.sceneLoaded 을 통해 유니티에서는 로딩씬이 끝나는 시점을 받을 수 있음
+        //OnSceneLoaded 를 입력하고 ctrl+. 을 눌러 메서드를 생성->메서드가 자동으로 만들어짐
         
 
-        loadSceneName = sceneName;
+        loadSceneName = sceneName; // 불러올 씬 이름은 매개변수
         StartCoroutine(LoadSceneProcess()); // 씬 불러와서 진행시킬 코루틴 작성.
 
     }
-    private IEnumerator LoadSceneProcess()
+    private IEnumerator LoadSceneProcess() // 씬 로드 프로세스
     {
-        progressBar.fillAmount = 0f;
-        yield return StartCoroutine(Fade()); // Fade 메서드를 불러 실행하고 그동안 아랫줄은 멈춤, 끝나야 다음 줄로 넘어감.
+        progressBar.fillAmount = 0f; // 프로그래스바는 0f부터 시작
+        yield return StartCoroutine(Fade());
+        // Fade 메서드를 불러 실행하고 그동안 아랫줄은 멈춤, 끝나야 다음 줄로 넘어감.
 
-        AsyncOperation op = SceneManager.LoadSceneAsync(loadSceneName); // 비동기 방식으로 loadSceneName의 씬을 호출
+        AsyncOperation op = SceneManager.LoadSceneAsync(loadSceneName); 
+        // 비동기 방식으로 loadSceneName의 씬을 호출
         op.allowSceneActivation = false; // 씬을 다 부르면 자동으로 씬 전환하는것을 false로 함.
 
         float timer = 0f;
@@ -61,7 +64,7 @@ public class LoadingSceneController : MonoBehaviour
         }
     }
     private IEnumerator Fade() // 패널의 알파값 조절함
-    {
+    { // 패널이 하얀색에서 점점 없어지도록 페이드아웃 효과 주는것임.
         float a = 1f;
         panle.alpha = a;
         yield return new WaitForSecondsRealtime(0.5f); // 0.3초간 대기
@@ -75,7 +78,7 @@ public class LoadingSceneController : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.3f);
     }
     
-    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1)
+    private void OnSceneLoaded(Scene arg0, LoadSceneMode arg1) // 씬이 로드 되었을때 실행하는 함수
     {
         if(arg0.name == loadSceneName)
         {

@@ -42,26 +42,6 @@ public class MoveCamera : MonoBehaviour
                     camera.transform.localPosition = new Vector3(camera.transform.localPosition.x, 35f, camera.transform.localPosition.z);
                 Debug.Log(camera.transform.localPosition);
             }
-            /*
-            else if (touch.phase == TouchPhase.Moved) // 터치가 움직였을때
-            {
-                nowPos = touch.position - touch.deltaPosition; // 움직이고 멈췄을 현재 포지션 저장
-                movePos = (Vector3)(prePos - nowPos) * Time.deltaTime * Speed; // 움직인 포지션 = 움직이기전 - 현재 포지션 값
-                if (GameDataManager.gamedata.CityHallLevel == 1)
-                {
-                    if (movePos.x < -15f)
-                        movePos.x = -15f;
-                    else if (movePos.x > 35f)
-                        movePos.x = 35f;
-                    if (movePos.y < -15f)
-                        movePos.y = -15f;
-                    else if (movePos.y > 35f)
-                        movePos.y = 35f;
-                }
-                camera.transform.Translate(movePos); // 카메라 포지션 변경
-                prePos = touch.position - touch.deltaPosition;
-            }
-            */
         }
         else if(Input.touchCount > 1)
         { }
