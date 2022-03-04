@@ -23,12 +23,26 @@ public class GameDataManager : MonoBehaviour
     public float medic; // 보건율
     //------건물 업그레이드 비용, 클릭, 초당 차트에서 불러온 내역 저장------
     //시청
-    public BigInteger[] CityHallPrice = new BigInteger[26];
+    public BigInteger[] CityHallPrice = new BigInteger[101];
     public BigInteger[] CityHallPerClick = new BigInteger[26];
     public BigInteger[] CityHallPerTime = new BigInteger[26];
+    public BigInteger[] CityHallPerClickChart = new BigInteger[101];
+    public BigInteger[] CityHallPerTimeChart = new BigInteger[101];
     public int CityHallLevel;
     public Text CityHallPerMoney;
     public Text cityhallLeveltext;
+    //경찰서
+    public BigInteger[] PolicePrice = new BigInteger[101];
+    public BigInteger[] PolicePerClickChart = new BigInteger[101];
+    public BigInteger[] PolicePerTimeChart = new BigInteger[101];
+    public int PoliceLevel;
+    public Text PoliceLevelText;
+    //병원
+    public BigInteger[] HospitalPrice = new BigInteger[101];
+    public BigInteger[] HospitalPerClickChart = new BigInteger[101];
+    public BigInteger[] HospitalPerTimeChart = new BigInteger[101];
+    public int HospitalLevel;
+    public Text HospitalLevelText;
     //----------------------------------------------------------------------
     public TextMeshProUGUI moneyui;
     public TextMeshProUGUI clickmoneyui;
@@ -83,7 +97,19 @@ public class GameDataManager : MonoBehaviour
         timemoneyui.text = ChangeMoneyToString(printtimemoney);
         CityHallPerMoney.text = ChangeMoneyToString(CityHallPerTime);
     }
-    string ChangeMoneyToString(BigInteger[] value)
+    public BigInteger[] UpdateMoney2(BigInteger[] target)
+    {
+        for (int i = 0; i < 25; i++)
+        {
+            if(target[i]>999)
+            {
+                target[i + 1] = target[i] / 1000;
+                target[i] -= target[i + 1] * 1000;
+            }
+        }
+        return target;
+    }
+    public string ChangeMoneyToString(BigInteger[] value)
     {
         string result="";
         int maxindex = 0;
@@ -123,6 +149,8 @@ public class GameDataManager : MonoBehaviour
     void printDataText()
     {
         cityhallLeveltext.text = "LV " + CityHallLevel.ToString();
+        PoliceLevelText.text = "LV " + PoliceLevel.ToString();
+        HospitalLevelText.text = "LV " + HospitalLevel.ToString();
     }
     void clickPerMoney()
     {
@@ -132,14 +160,23 @@ public class GameDataManager : MonoBehaviour
             if (!EventSystem.current.IsPointerOverGameObject(Input.GetTouch(0).fingerId)) // 터치한곳이 UI가 아니라면
             {
                 if(touch.phase == TouchPhase.Ended)
-                    money += clickmoney;
+                {
+                    if (SkillDataManager.skillgamedata.Isrunningclick == true)
+                        money += clickmoney * 10;
+                    else
+                        money += clickmoney;
+                }
+                    
             }
         }
         else if (Input.GetMouseButtonDown(0)) // 마우스 클릭했을때(컴퓨터에서 테스트하기 위해)
         {
             if (!EventSystem.current.IsPointerOverGameObject())
             {
-                money += clickmoney;
+                if (SkillDataManager.skillgamedata.Isrunningclick == true)
+                    money += clickmoney * 10;
+                else
+                    money += clickmoney;
             }
         }
     }
@@ -148,7 +185,10 @@ public class GameDataManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSecondsRealtime(1f);
-            money += timemoney;
+            if (SkillDataManager.skillgamedata.Isrunningtime == true)
+                money += timemoney * 2;
+            else
+                money += timemoney;
         }
     }
     IEnumerator autoSave()
@@ -161,10 +201,24 @@ public class GameDataManager : MonoBehaviour
     }
     void saveData()
     {
+        Dictionary<string, int> BuildingLevel = new Dictionary<string, int> // 빌딩들의 레벨은 딕셔너리로 저장함.
+        {
+            {"CityHall", CityHallLevel },
+            {"Bank", 1 },
+            {"PoliceStation", PoliceLevel },
+            {"Hospital", HospitalLevel },
+            {"FireStation", 1 },
+            {"Skyscraper", 1 },
+            {"Factory", 1 },
+            {"Airport", 1 },
+            {"TrainStation", 1 },
+            {"Port", 1 }
+        };
         Param param = new Param(); // Param은 서버 저장 하는 변수
         param.Add("Money", money.ToString());
         param.Add("ClickMoney", clickmoney.ToString());
         param.Add("TimePerMoney", timemoney.ToString());
+        param.Add("BuildingLevel", BuildingLevel);
         param.Add("Police", police.ToString());
         param.Add("Medic", medic.ToString());
         Backend.GameData.Update("UserInfo", indate, param);

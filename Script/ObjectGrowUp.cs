@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ObjectGrowUp : MonoBehaviour
 {
-    public float delay=0.05f;
+    public float delay;
     List<Transform> childs;
 
     // Use this for initialization
@@ -23,7 +23,7 @@ public class ObjectGrowUp : MonoBehaviour
 
     IEnumerator Enable()
     {
-        int i = 0, iterations = Mathf.RoundToInt(delay / Time.deltaTime) * 200;
+        int i = 0, iterations = Mathf.RoundToInt(delay / Time.deltaTime) * 800;
         float max = 1.6f, average = 1f, x = 0f;
         if (iterations == 0)
             iterations = 1;

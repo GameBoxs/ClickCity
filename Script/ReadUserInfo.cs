@@ -29,6 +29,8 @@ public class ReadUserInfo : MonoBehaviour
                 GameDataManager.gamedata.medicui.text = rows[0]["Medic"][0].ToString() + " %";
 
                 GameDataManager.gamedata.CityHallLevel = int.Parse(rows[0]["BuildingLevel"][0]["CityHall"][0].ToString());
+                GameDataManager.gamedata.PoliceLevel = int.Parse(rows[0]["BuildingLevel"][0]["PoliceStation"][0].ToString());
+                GameDataManager.gamedata.HospitalLevel = int.Parse(rows[0]["BuildingLevel"][0]["Hospital"][0].ToString());
 
                 GameDataManager.gamedata.indate = rows[0]["inDate"][0].ToString();
 
@@ -44,7 +46,7 @@ public class ReadUserInfo : MonoBehaviour
     void InitalizeUser() // UserInfo테이블에 데이터가 없는 신규 유저일시 정보를 생성해주는 함수.
     {
         string ClickMoney = "1"; // 터치당 돈 1원
-        string TimePerMoney = "0"; // 초당 돈 0원
+        string TimePerMoney = "1"; // 초당 돈 0원
         string Money = "0"; // 가지고 있는 돈 0원
         float Police = 100f; // 치안율 0.0
         float Medic = 100f; // 보건율 0.0
@@ -52,8 +54,8 @@ public class ReadUserInfo : MonoBehaviour
         {
             {"CityHall", 1 },
             {"Bank", 1 },
-            {"PoliceStation", 1 },
-            {"Hospital", 1 },
+            {"PoliceStation", 0 },
+            {"Hospital", 0 },
             {"FireStation", 1 },
             {"Skyscraper", 1 },
             {"Factory", 1 },
@@ -99,14 +101,16 @@ public class ReadUserInfo : MonoBehaviour
     void ReadBuilding() // 차트에서 내역 불러오기.
     {
         BackendReturnObject ChartCityHall = Backend.Chart.GetChartContents("25093");
-        if(ChartCityHall.IsSuccess())
+        BackendReturnObject ChartPolice = Backend.Chart.GetChartContents("32669");
+        BackendReturnObject ChartHospital = Backend.Chart.GetChartContents("32670");
+        if (ChartCityHall.IsSuccess())
         {
             JsonData rows = ChartCityHall.GetReturnValuetoJSON()["rows"];
             for(int i=0;i<rows.Count;i++)
             {
                 GameDataManager.gamedata.CityHallPrice[i] = BigInteger.Parse(rows[i]["Price"][0].ToString());
-                GameDataManager.gamedata.CityHallPerClick[i] = BigInteger.Parse(rows[i]["ClickPerMoney"][0].ToString());
-                GameDataManager.gamedata.CityHallPerTime[i] = BigInteger.Parse(rows[i]["TimePerMoney"][0].ToString());
+                GameDataManager.gamedata.CityHallPerClickChart[i] = BigInteger.Parse(rows[i]["ClickPerMoney"][0].ToString());
+                GameDataManager.gamedata.CityHallPerTimeChart[i] = BigInteger.Parse(rows[i]["TimePerMoney"][0].ToString());
             }
         }
         else
@@ -123,11 +127,31 @@ public class ReadUserInfo : MonoBehaviour
                     break;
             }
         }
+        if (ChartPolice.IsSuccess())
+        {
+            JsonData rows = ChartPolice.GetReturnValuetoJSON()["rows"];
+            for (int i = 0; i < rows.Count; i++)
+            {
+                GameDataManager.gamedata.PolicePrice[i] = BigInteger.Parse(rows[i]["Price"][0].ToString());
+                GameDataManager.gamedata.PolicePerClickChart[i] = BigInteger.Parse(rows[i]["ClickPerMoney"][0].ToString());
+                GameDataManager.gamedata.PolicePerTimeChart[i] = BigInteger.Parse(rows[i]["TimePerMoney"][0].ToString());
+            }
+        }
+        if (ChartHospital.IsSuccess())
+        {
+            JsonData rows = ChartHospital.GetReturnValuetoJSON()["rows"];
+            for (int i = 0; i < rows.Count; i++)
+            {
+                GameDataManager.gamedata.HospitalPrice[i] = BigInteger.Parse(rows[i]["Price"][0].ToString());
+                GameDataManager.gamedata.HospitalPerClickChart[i] = BigInteger.Parse(rows[i]["ClickPerMoney"][0].ToString());
+                GameDataManager.gamedata.HospitalPerTimeChart[i] = BigInteger.Parse(rows[i]["TimePerMoney"][0].ToString());
+            }
+        }
     }
     void Start()
     {
         CheckUserData();
-        //ReadBuilding();
+        ReadBuilding();
     }
     public void OnclickLogout()
     {
